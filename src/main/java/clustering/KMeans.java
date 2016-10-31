@@ -33,7 +33,7 @@ import java.util.logging.SimpleFormatter;
 public class KMeans {
 
 	// Number of Clusters. This metric should be related to the number of points
-	private int NUM_CLUSTERS = 10;
+	private int NUM_CLUSTERS = 5;
 	// Number of Points
 	// Min and Max X and Y
 	private static double MIN_COORDINATE_Y = 0;
@@ -50,21 +50,25 @@ public class KMeans {
 	private String readPath;
 	private String savePath;
 	private String txt;
+	private String indicatorName;
 
 	public KMeans(boolean training) {
 		this.points = new ArrayList<Point>();
 		this.clusters = new ArrayList<Cluster>();
 		this.data = new ArrayList<Data>();
+		//indicatorName = "Active Files";
+		indicatorName = "Activated Virtual Pages";
 
 		txt = "";
 		if (training) {
 			readPath = "C:\\Users\\Caio\\Desktop\\Ezio Auditore\\UFAL_MultiLayer_AnomalyDetector\\K-mean Clustering\\K-mean Clustering\\trainData.csv";
+			savePath = "C:\\Users\\Caio\\Desktop\\Ezio Auditore\\UFAL_MultiLayer_AnomalyDetector\\K-mean Clustering\\K-mean Clustering\\trainOutput.txt";
 
 		} else {
 			readPath = "C:\\Users\\Caio\\Desktop\\Ezio Auditore\\UFAL_MultiLayer_AnomalyDetector\\K-mean Clustering\\K-mean Clustering\\evalData.csv";
+			savePath = "C:\\Users\\Caio\\Desktop\\Ezio Auditore\\UFAL_MultiLayer_AnomalyDetector\\K-mean Clustering\\K-mean Clustering\\evalOutput.txt";
 		}
-		savePath = "C:\\Users\\Caio\\Desktop\\Ezio Auditore\\UFAL_MultiLayer_AnomalyDetector\\K-mean Clustering\\K-mean Clustering\\respData.txt";
-		readData();
+
 	}
 
 	/**
@@ -79,21 +83,22 @@ public class KMeans {
 		/*
 		 * Se for manter como dataseries, deixar descomentado
 		 */
-		MIN_COORDINATE_X = 0;
 		MAX_COORDINATE_X = data.size();
-		
+
 		for (int i = 0; i < data.size(); i++) {
 			/*
 			 * Se for data series
 			 */
 			Point p = new Point((double) i + 10, Double.valueOf(data.get(i).getValue()));
-			txt += (i + 10) + "," + Double.valueOf(data.get(i).getValue()) + "\n";
-			
+			// txt += (i + 10) + "," + Double.valueOf(data.get(i).getValue()) +
+			// "\n";
+
 			/*
 			 * Se for plot YxY
 			 */
-			//Point p = new Point(Double.valueOf(data.get(i).getValue()),
-			//txt += Double.valueOf(data.get(i).getValue()) + "," + Double.valueOf(data.get(i).getValue()) + "\n";			
+			// Point p = new Point(Double.valueOf(data.get(i).getValue()),
+			// txt += Double.valueOf(data.get(i).getValue()) + "," +
+			// Double.valueOf(data.get(i).getValue()) + "\n";
 			if (Integer.valueOf(data.get(i).getValue()) < MIN_COORDINATE_Y) {
 				MIN_COORDINATE_Y = Double.valueOf(data.get(i).getValue());
 			}
@@ -117,8 +122,8 @@ public class KMeans {
 		}
 
 		// Print Initial state
-		System.out.println("Initial state:");
-		plotClusters();
+		//System.out.println("Initial state:");
+		//plotClusters();
 	}
 
 	/**
@@ -131,8 +136,8 @@ public class KMeans {
 			/*
 			 * Coletando dados para salvar em arquivo;
 			 */
-			txt += c.collectClusterData();
-			
+			// txt += c.collectClusterData();
+
 			System.out.println("");
 		}
 	}
@@ -168,9 +173,9 @@ public class KMeans {
 			}
 
 			// System.out.println("");
-			System.out.println("Iteration: " + iteration);
-			txt += "Iteration: " + iteration + "\n";
-			System.out.println("\tCentroid distances: " + distance);
+			//System.out.println("Iteration: " + iteration);
+			//txt += "Iteration: " + iteration + "\n";
+			//System.out.println("\tCentroid distances: " + distance);
 			plotClusters();
 
 			/*
@@ -295,7 +300,7 @@ public class KMeans {
 
 	}
 
-	private void readData() {
+	public void readData() {
 
 		BufferedReader br = null;
 
@@ -306,7 +311,7 @@ public class KMeans {
 			br = new BufferedReader(new FileReader(readPath));
 
 			while ((sCurrentLine = br.readLine()) != null) {
-				if (sCurrentLine.contains("Activated Virtual Pages")) {
+				if (sCurrentLine.contains(indicatorName)) {
 					String[] line = sCurrentLine.split(",");
 
 					SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
@@ -336,11 +341,18 @@ public class KMeans {
 
 	}
 
-	/*
-	 * Save data from clusters
-	 */
 	public void saveData() {
 		BufferedWriter writer = null;
+
+		String txt = "";
+
+		for (Cluster c : clusters) {
+			if (c.getPoints().size() > 1) {
+				txt += "Cluster," + c.getId() + "\n";
+				txt += "centroid," + c.getCentroid().getX() + "," + c.getCentroid().getY() + "\n";
+			}
+		}
+
 		try {
 			writer = new BufferedWriter(new FileWriter(savePath));
 			writer.write(txt);

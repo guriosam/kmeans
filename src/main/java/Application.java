@@ -29,10 +29,32 @@ public class Application {
      *      3.3. If not, we have found a expected point.
      */
     public static void main(String[] args) {
+    	//Training Phase
+    	System.out.println("START TRAINING PHASE");
         KMeans kmeans = new KMeans(true);
+        kmeans.readData();
         kmeans.init();
         kmeans.calculate();
         kmeans.saveData();
+    	
+        //Evaluation Phase
+        System.out.println("START EVALUATING PHASE");
+        KMeans kmeans2 = new KMeans(false);
+        kmeans2.readData();
+        kmeans2.init();
+        kmeans2.calculate();
+        kmeans2.saveData();
+        
+        System.out.println("START ANALYSING PHASE");
+        AnomalyDetector ad = new AnomalyDetector();
+        ad.readTrainClusters();
+        ad.readEvalClusters();
+        ad.getDistanceBetweenClusters();
+        ad.calculateDistanceRate();
+        
+        
+        
+        
     }
 
 }

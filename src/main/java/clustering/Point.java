@@ -20,34 +20,34 @@ import java.util.concurrent.ThreadLocalRandom;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class Point {
+public class Point {
 
     private double x = 0;
     private double y = 0;
     private int cluster_number = 0;
 
-    Point(double x, double y) {
+    public Point(double x, double y) {
         this.setX(x);
         this.setY(y);
     }
 
-    void setX(double x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    double getX()  {
+    public double getX()  {
         return this.x;
     }
 
-    void setY(double y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    double getY() {
+    public double getY() {
         return this.y;
     }
 
-    void setCluster(int n) {
+    public void setCluster(int n) {
         this.cluster_number = n;
     }
 
@@ -62,7 +62,7 @@ class Point {
      * @param p2 The second point.
      * @return The Euclidean Distance between first and second points.
      */
-    static double distance(Point p1, Point p2) {
+    public static double distance(Point p1, Point p2) {
         return Math.sqrt(Math.pow((p2.getY() - p1.getY()), 2) + Math.pow((p2.getX() - p1.getX()), 2));
     }
 

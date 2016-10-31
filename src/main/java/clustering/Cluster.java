@@ -26,18 +26,18 @@ public class Cluster {
     private int id;
 
     // Creates a new Cluster
-    Cluster(int id) {
+    public Cluster(int id) {
         this.id = id;
         this.points = new ArrayList<Point>();
         this.centroid = null;
         this.threshold = 0.0;
     }
 
-    List<Point> getPoints() {
+    public List<Point> getPoints() {
         return points;
     }
 
-    void addPoint(Point point) {
+    public void addPoint(Point point) {
         points.add(point);
     }
 
@@ -45,11 +45,11 @@ public class Cluster {
         this.points = points;
     }
 
-    Point getCentroid() {
+    public Point getCentroid() {
         return centroid;
     }
 
-    void setCentroid(Point centroid) {
+    public void setCentroid(Point centroid) {
         this.centroid = centroid;
     }
 
@@ -68,14 +68,14 @@ public class Cluster {
     /**
      * Remove all points from a cluster.
      */
-    void clear() {
+    public void clear() {
         points.clear();
     }
 
     /**
      * Print the data of a Cluster.
      */
-    void plotCluster() {
+    public void plotCluster() {
         System.out.println("\tCluster: " + id);
         System.out.println("\tCentroid: " + centroid);
         System.out.println("\tThreshold: " + threshold);
@@ -92,7 +92,6 @@ public class Cluster {
     
     String collectClusterData(){
     	String s = "";
-    	
 
         for(Point p : points) {
             s += p.getX() + "," + p.getY() + "\n";
