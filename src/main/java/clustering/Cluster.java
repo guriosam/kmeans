@@ -75,21 +75,31 @@ public class Cluster {
     /**
      * Print the data of a Cluster.
      */
-    String plotCluster() {
-        //System.out.println("\tCluster: " + id);
+    void plotCluster() {
+        System.out.println("\tCluster: " + id);
         System.out.println("\tCentroid: " + centroid);
-        //System.out.println("\tThreshold: " + threshold);
-        //System.out.println("\tPoints:");
+        System.out.println("\tThreshold: " + threshold);
+        System.out.println("\tPoints:");
 
-        String s = "";
+        
         
         for(Point p : points) {
             System.out.println("\t\t" + p);
-            s += p.getX() + "," + p.getY() + "\n";
+            //s += p.getX() + "," + p.getY() + "\n";
         }
         
-        return s;
     }
     
+    String collectClusterData(){
+    	String s = "";
+    	
+
+        for(Point p : points) {
+            s += p.getX() + "," + p.getY() + "\n";
+        }
+    	
+    	return s;
+    	
+    }
     
 }

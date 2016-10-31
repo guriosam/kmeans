@@ -47,7 +47,8 @@ public class KMeans {
 
 	private int iteration;
 
-	private String path;
+	private String readPath;
+	private String savePath;
 	private String txt;
 
 	public KMeans(boolean training) {
@@ -57,12 +58,13 @@ public class KMeans {
 
 		txt = "";
 		if (training) {
-			path = "C:\\Users\\Caio\\Desktop\\Ezio Auditore\\UFAL_MultiLayer_AnomalyDetector\\K-mean Clustering\\K-mean Clustering\\trainData.csv";
+			readPath = "C:\\Users\\Caio\\Desktop\\Ezio Auditore\\UFAL_MultiLayer_AnomalyDetector\\K-mean Clustering\\K-mean Clustering\\trainData.csv";
+
 		} else {
-			path = "C:\\Users\\Caio\\Desktop\\Ezio Auditore\\UFAL_MultiLayer_AnomalyDetector\\K-mean Clustering\\K-mean Clustering\\evalData.csv";
+			readPath = "C:\\Users\\Caio\\Desktop\\Ezio Auditore\\UFAL_MultiLayer_AnomalyDetector\\K-mean Clustering\\K-mean Clustering\\evalData.csv";
 		}
+		savePath = "C:\\Users\\Caio\\Desktop\\Ezio Auditore\\UFAL_MultiLayer_AnomalyDetector\\K-mean Clustering\\K-mean Clustering\\respData.txt";
 		readData();
-		// convertTime("");
 	}
 
 	/**
@@ -74,33 +76,35 @@ public class KMeans {
 			MIN_COORDINATE_Y = Double.valueOf(data.get(0).getValue());
 		}
 
+		/*
+		 * Se for manter como dataseries, deixar descomentado
+		 */
 		MIN_COORDINATE_X = 0;
 		MAX_COORDINATE_X = data.size();
-		txt += "Input:\n";
-
+		
 		for (int i = 0; i < data.size(); i++) {
+			/*
+			 * Se for data series
+			 */
 			Point p = new Point((double) i + 10, Double.valueOf(data.get(i).getValue()));
-			// Point p = new Point(Double.valueOf(data.get(i).getValue()),
-			// Double.valueOf(data.get(i).getValue()));
+			txt += (i + 10) + "," + Double.valueOf(data.get(i).getValue()) + "\n";
+			
+			/*
+			 * Se for plot YxY
+			 */
+			//Point p = new Point(Double.valueOf(data.get(i).getValue()),
+			//txt += Double.valueOf(data.get(i).getValue()) + "," + Double.valueOf(data.get(i).getValue()) + "\n";			
 			if (Integer.valueOf(data.get(i).getValue()) < MIN_COORDINATE_Y) {
 				MIN_COORDINATE_Y = Double.valueOf(data.get(i).getValue());
-				// System.out.println("MIN:" + MIN_COORDINATE_Y);
 			}
 
 			if (Integer.valueOf(data.get(i).getValue()) > MAX_COORDINATE_Y) {
 				MAX_COORDINATE_Y = Double.valueOf(data.get(i).getValue());
-				// System.out.println("MAX:" + MAX_COORDINATE_Y);
 			}
-			// System.out.println(i + 10 + " " +
-		
-			txt += (i+10) + "," + Double.valueOf(data.get(i).getValue()) + "\n";
-						
-			// Double.valueOf(data.get(i).getValue();
+
 			points.add(p);
 
 		}
-
-		// System.out.println(data.size());
 
 		// Create Clusters
 		// Set Random Centroids
@@ -113,7 +117,7 @@ public class KMeans {
 		}
 
 		// Print Initial state
-		// System.out.println("Initial state:");
+		System.out.println("Initial state:");
 		plotClusters();
 	}
 
@@ -123,8 +127,13 @@ public class KMeans {
 	private void plotClusters() {
 		for (int i = 0; i < NUM_CLUSTERS; i++) {
 			Cluster c = clusters.get(i);
-				txt += c.plotCluster();
-			// System.out.println("");
+			c.plotCluster();
+			/*
+			 * Coletando dados para salvar em arquivo;
+			 */
+			txt += c.collectClusterData();
+			
+			System.out.println("");
 		}
 	}
 
@@ -149,8 +158,6 @@ public class KMeans {
 			// Calculate new centroids.
 			calculateCentroids();
 
-			iteration++;
-
 			List<Point> currentCentroids = getCentroids();
 
 			// Calculates total distance between new and old Centroids
@@ -166,6 +173,11 @@ public class KMeans {
 			System.out.println("\tCentroid distances: " + distance);
 			plotClusters();
 
+			/*
+			 * 
+			 * Aplicando abordagem de eliminar clusters vazios
+			 */
+			// iteration++;
 			// removeEmptyClusters();
 
 			if (distance == 0) {
@@ -249,6 +261,9 @@ public class KMeans {
 			if (n_points > 0) {
 				double newX = sumX / n_points;
 				double newY = sumY / n_points;
+				/*
+				 * Linha comentada para manter o centroid em X estático
+				 */
 				// centroid.setX(newX);
 				centroid.setY(newY);
 			}
@@ -288,7 +303,7 @@ public class KMeans {
 
 			String sCurrentLine;
 
-			br = new BufferedReader(new FileReader(path));
+			br = new BufferedReader(new FileReader(readPath));
 
 			while ((sCurrentLine = br.readLine()) != null) {
 				if (sCurrentLine.contains("Activated Virtual Pages")) {
@@ -321,10 +336,13 @@ public class KMeans {
 
 	}
 
+	/*
+	 * Save data from clusters
+	 */
 	public void saveData() {
 		BufferedWriter writer = null;
 		try {
-			writer = new BufferedWriter(new FileWriter("C:\\Users\\Caio\\Desktop\\Ezio Auditore\\UFAL_MultiLayer_AnomalyDetector\\K-mean Clustering\\K-mean Clustering\\respData.txt"));
+			writer = new BufferedWriter(new FileWriter(savePath));
 			writer.write(txt);
 
 		} catch (IOException e) {
